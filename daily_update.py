@@ -1,0 +1,108 @@
+import requests
+import pandas as pd
+import re
+from transformers import pipeline
+
+API_KEY = "b60a0ce93e849af0ed37d20f0ee03817"
+
+categories = {
+    "National": "India",
+    "Sports": "sports",
+    "Business": "business",
+    "Editorial": "editorial",
+    "Tech": "technology",
+    "Politics": "politics",
+    "International": "world"
+}
+
+def fetch_times_of_india_news(query, max_articles=50):
+    url = (f"https://gnews.io/api/v4/search?"
+           f"q={query}&lang=en&max={max_articles}&token={API_KEY}"
+           f"&in=timesofindia.indiatimes.com")
+    response = requests.get(url)
+    articles = response.json().get("articles", [])
+    df = pd.DataFrame([{
+        "Category": query,
+        "Title": a.get("title", ""),
+        "Description": a.get("description", ""),
+        "URL": a.get("url", "")
+    } for a in articles])
+    return df
+
+def simple_summarizer(text, num_sentences=3):
+    if not isinstance(text, str) or len(text) < 20:
+        return text
+    sentences = re.split(r'(?<=[.!?])\s+', text)
+    sentences = [s for s in sentences if len(s.strip()) > 30]
+    return ' '.join(sentences[:num_sentences])
+
+def abstractive_summarizer(text, summarizer):
+    if not isinstance(text, str) or len(text) < 30:
+        return text
+    try:
+        clean_text = str(text)[:1000]
+        result = summarizer(clean_text, max_length=60, min_length=20, do_sample=False)
+        return result[0]['summary_text']
+    except:
+        return clean_text[:120]
+
+def make_mcq(summary, title):
+    sentences = str(summary).split('.')
+    valid = [s.strip() for s in sentences if len(s.strip()) > 25]
+    if len(valid) > 1:
+        return (f"Q: Which statement is most accurate about '{title}'?\n"
+                f"A. {valid[0]}\nB. {valid[1]}")
+    return ""
+
+def quick_pointers(summary):
+    sentences = [s.strip() for s in str(summary).split('.') if len(s.strip()) > 20]
+    return '\n'.join([f"- {s}" for s in sentences[:3]])
+
+def easy_explanation(category):
+    if category == "Politics":
+        return "This news covers government actions or policy—good for current affairs prep."
+    elif category == "Business":
+        return "Business update—note market trends, economic data, or major events."
+    elif category == "Tech":
+        return "Covers a new technology or innovation—read for latest in tech world."
+    elif category == "Sports":
+        return "Sports update—focus on teams, results, or big tournaments."
+    elif category == "International":
+        return "International headline—key for global or world affairs section."
+    elif category == "Editorial":
+        return "Editorial or opinion piece—useful for essay, interview, or comprehension."
+    else:
+        return "General news—good for reading practice, GK, and exam context."
+
+def main():
+    dfs = []
+    for cat_name, query in categories.items():
+        df_cat = fetch_times_of_india_news(query=query)
+        if not df_cat.empty:
+            df_cat['Category'] = cat_name
+            dfs.append(df_cat)
+
+    all_news_df = pd.concat(dfs).drop_duplicates(subset=['URL', 'Title'])
+    all_news_df.reset_index(drop=True, inplace=True)
+    
+    # Pick text column
+    text_column = "Description" if all_news_df['Description'].notnull().sum() > 0 else "Title"
+    all_news_df = all_news_df[all_news_df[text_column].str.len() > 50].reset_index(drop=True)
+    
+    # Extractive summaries
+    all_news_df['Extractive_Summary'] = all_news_df[text_column].apply(simple_summarizer)
+    
+    # Load abstractive summarizer pipeline
+    summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
+    all_news_df['Abstractive_Summary'] = all_news_df[text_column].apply(lambda x: abstractive_summarizer(x, summarizer))
+    
+    # MCQs, pointers, explanations
+    all_news_df['MCQ_Sample'] = all_news_df.apply(lambda row: make_mcq(row['Abstractive_Summary'], row['Title']), axis=1)
+    all_news_df['Quick_Pointers'] = all_news_df['Abstractive_Summary'].apply(quick_pointers)
+    all_news_df['Easy_Explanation'] = all_news_df['Category'].apply(easy_explanation)
+    
+    # Save the CSV
+    all_news_df.to_csv("TOI_final_all_features.csv", index=False)
+    
+if __name__ == "__main__":
+    main()
