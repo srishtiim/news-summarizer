@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 # URL of your daily updated CSV on GitHub (replace with your repo)
-CSV_URL = "https://raw.githubusercontent.com/your-username/your-repo/main/TOI_final_all_features.csv"
+CSV_URL = "https://raw.githubusercontent.com/srishtiim/news-summarizer/main/TOI_final_all_features.csv"
 
 @st.cache_data(ttl=3600)  # Cache for 1 hour (customize as needed)
 def load_data():
