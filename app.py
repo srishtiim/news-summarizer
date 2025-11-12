@@ -1,10 +1,8 @@
 import streamlit as st
 import pandas as pd
 
-# URL of your daily updated CSV on GitHub (replace with your repo)
 CSV_URL = "https://raw.githubusercontent.com/srishtiim/news-summarizer/main/TOI_final_all_features.csv"
 
-@st.cache_data(ttl=3600)  # Cache for 1 hour (customize as needed)
 def load_data():
     df = pd.read_csv(CSV_URL)
     df.fillna("", inplace=True)
@@ -36,7 +34,6 @@ show_explanation = st.sidebar.checkbox("Show Exam Explanation", True)
 st.title("📰 Times of India News Summarizer")
 st.caption("Live updated, curated, and summarized for students and exam aspirants.")
 
-# Helper function to display MCQ interactively
 def show_mcq(question, options, correct_index, explanation, key):
     st.write(f"**{question}**")
     user_answer = st.radio("Choose one:", options, key=key)
@@ -57,7 +54,7 @@ for idx, row in filtered_df.iterrows():
         st.write(f"**Category:** {row['Category']}")
         st.write("**Original Description:**")
         st.info(row['Description'] if row['Description'] else row['Title'])
-        
+
         if summary_type == "Abstractive":
             st.write(f"**Abstractive Summary:** {row.get('Abstractive_Summary', '')}")
         else:
@@ -68,28 +65,25 @@ for idx, row in filtered_df.iterrows():
                 f"<span style='font-size:15px;'><b>Quick Pointers:</b><br>{row['Quick_Pointers'].replace('-', '•')}</span>",
                 unsafe_allow_html=True
             )
-        
+
         if show_explanation and row['Easy_Explanation']:
             st.warning(row['Easy_Explanation'])
-        
+
         st.markdown(f"[🌐 Read Full Article]({row['URL']})", unsafe_allow_html=True)
-        
+
     with col2:
         if show_mcq and row['MCQ_Sample']:
-            # Example MCQ format: split question and options from the stored string
             mcq_text = row['MCQ_Sample']
             lines = mcq_text.split('\n')
             if len(lines) >= 3:
                 question = lines[0].replace('Q:', '').strip()
-                options = [l.split('.')[1].strip() if '.' in l else l.strip() for l in lines[1:]]
-                correct_index = 0  # Assuming 1st option is correct; customize if you have answer key
+                options = [l.split('.', 1)[1].strip() if '.' in l else l.strip() for l in lines[1:]]
+                correct_index = 0  # Edit if you have the answer key
                 explanation = "This question is based on the news summary to aid revision."
-                # Show interactive MCQ
                 show_mcq(question, options, correct_index, explanation, key=f"mcq_{idx}")
 
     st.markdown("---")
 
-# Footer
 st.markdown("""
 <div style='text-align:center;color:#333'>
     <hr>
