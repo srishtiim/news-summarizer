@@ -41,7 +41,7 @@ def abstractive_summarizer(text, summarizer):
         return text
     try:
         clean_text = str(text)[:1000]
-        result = summarizer(clean_text, max_length=60, min_length=20, do_sample=False)
+        result = summarizer(clean_text, max_length=150, min_length=60, do_sample=False)
         return result[0]['summary_text']
     except:
         return clean_text[:120]
@@ -74,35 +74,59 @@ def easy_explanation(category):
     else:
         return "General news—good for reading practice, GK, and exam context."
 
-def main():
+def update_news():
     dfs = []
+    print("Fetching news...")
     for cat_name, query in categories.items():
-        df_cat = fetch_times_of_india_news(query=query)
-        if not df_cat.empty:
-            df_cat['Category'] = cat_name
-            dfs.append(df_cat)
+        try:
+            df_cat = fetch_times_of_india_news(query=query)
+            if not df_cat.empty:
+                df_cat['Category'] = cat_name
+                dfs.append(df_cat)
+            else:
+                print(f"No articles found for {cat_name}")
+        except Exception as e:
+            print(f"Error fetching {cat_name}: {e}")
+
+    if not dfs:
+        print("No news fetched. Check API key or connection.")
+        return False
 
     all_news_df = pd.concat(dfs).drop_duplicates(subset=['URL', 'Title'])
     all_news_df.reset_index(drop=True, inplace=True)
     
+    print(f"Total unique articles: {len(all_news_df)}")
+
     # Pick text column
     text_column = "Description" if all_news_df['Description'].notnull().sum() > 0 else "Title"
     all_news_df = all_news_df[all_news_df[text_column].str.len() > 50].reset_index(drop=True)
     
     # Extractive summaries
-    all_news_df['Extractive_Summary'] = all_news_df[text_column].apply(simple_summarizer)
+    print("Generating extractive summaries...")
+    all_news_df['Extractive_Summary'] = all_news_df[text_column].apply(lambda x: simple_summarizer(x, num_sentences=5))
     
     # Load abstractive summarizer pipeline
-    summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
-    all_news_df['Abstractive_Summary'] = all_news_df[text_column].apply(lambda x: abstractive_summarizer(x, summarizer))
+    try:
+        print("Loading summarization model...")
+        summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
+        print("Generating abstractive summaries...")
+        # Increased max_length and min_length for 4-5 line summaries
+        all_news_df['Abstractive_Summary'] = all_news_df[text_column].apply(lambda x: abstractive_summarizer(x, summarizer))
+    except Exception as e:
+        print(f"Error in abstractive summarization: {e}")
+        all_news_df['Abstractive_Summary'] = all_news_df['Extractive_Summary'] # Fallback
     
     # MCQs, pointers, explanations
+    print("Generating extras (MCQs, pointers)...")
     all_news_df['MCQ_Sample'] = all_news_df.apply(lambda row: make_mcq(row['Abstractive_Summary'], row['Title']), axis=1)
     all_news_df['Quick_Pointers'] = all_news_df['Abstractive_Summary'].apply(quick_pointers)
     all_news_df['Easy_Explanation'] = all_news_df['Category'].apply(easy_explanation)
     
     # Save the CSV
-    all_news_df.to_csv("TOI_final_all_features.csv", index=False)
+    output_file = "TOI_final_all_features.csv"
+    all_news_df.to_csv(output_file, index=False)
+    print(f"Successfully saved {len(all_news_df)} articles to {output_file}")
+    return True
     
 if __name__ == "__main__":
-    main()
+    update_news()
