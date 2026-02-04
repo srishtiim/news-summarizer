@@ -15,12 +15,21 @@ categories = {
     "International": "world"
 }
 
-def fetch_times_of_india_news(query, max_articles=50):
+def fetch_times_of_india_news(query, max_articles=10):
     url = (f"https://gnews.io/api/v4/search?"
            f"q={query}&lang=en&max={max_articles}&token={API_KEY}"
            f"&in=timesofindia.indiatimes.com")
     response = requests.get(url)
-    articles = response.json().get("articles", [])
+    data = response.json()
+    
+    if response.status_code != 200:
+        print(f"API Error for {query}: {data}")
+        return pd.DataFrame()
+
+    articles = data.get("articles", [])
+    if not articles:
+        print(f"No articles found in response for {query}. Response keys: {list(data.keys())}")
+        
     df = pd.DataFrame([{
         "Category": query,
         "Title": a.get("title", ""),
@@ -107,8 +116,8 @@ def update_news():
     
     # Load abstractive summarizer pipeline
     try:
-        print("Loading summarization model...")
-        summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
+        print("Loading summarization model (DistilBART for speed)...")
+        summarizer = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6")
         print("Generating abstractive summaries...")
         # Increased max_length and min_length for 4-5 line summaries
         all_news_df['Abstractive_Summary'] = all_news_df[text_column].apply(lambda x: abstractive_summarizer(x, summarizer))

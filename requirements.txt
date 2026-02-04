@@ -3,3 +3,7 @@ requests
 streamlit
 transformers
 torch
+flask
+flask-cors
+bcrypt
+pyjwt
