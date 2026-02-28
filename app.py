@@ -11,38 +11,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-import jwt
-import datetime
-
-# --- Authentication Logic ---
-SECRET_KEY = "TO BE LOADED FROM ENV OR MATCH AUTH SERVER" # Ideally this should be shared or env var
-# For this MVP, we will assume the same hardcoded random logic won't work across processes unless we share it.
-# IMPORTANT: For the prototype to work without shared storage/Env, we will grab the token payload simply to decode it 
-# BUT since the secret key is random in auth_server.py each restart, we need to FIX the secret key in both files or 
-# pass it. 
-# DECISION: I will update auth_server.py to use a fixed key for this demo or write the key to a .env file.
-# FOR NOW: I will just check if "token" exists in query params to act as a gatekeeper, 
-# and trust the redirection source. For production, Shared Secret is required.
-
-def check_auth():
-    # 1. Check if token is in query params (redirect from login)
-    query_params = st.query_params
-    token = query_params.get("token", None)
-    
-    if token:
-        st.session_state['auth_token'] = token
-        # Clear query param to clean URL (Streamlit re-run) - optional, might complicate things
-    
-    # 2. Check if token is in session state
-    if 'auth_token' not in st.session_state:
-        st.error("Please log in to access this application.")
-        st.link_button("Go to Login Page", "http://localhost:5001")
-        st.stop()
-        
-    # 3. (Optional) Validate Token Expiry if we shared the key
-    return True
-
-check_auth()
+# Removed Local Auth Logic
 
 # --- Custom CSS for Premium Look (Glassmorphism + Modern Typography) ---
 st.markdown("""
@@ -191,12 +160,6 @@ with st.sidebar:
     st.image("https://timesofindia.indiatimes.com/icons/toi_icon_128x128.png", width=50)
     st.title("TOI Summarizer")
     
-    if st.sidebar.button("Log Out"):
-         st.session_state.pop('auth_token', None)
-         st.query_params.clear() 
-         # Redirect back to Auth Server
-         st.markdown('<meta http-equiv="refresh" content="0;url=http://localhost:5001">', unsafe_allow_html=True)
-
     st.markdown("---")
     
     if not df.empty:

@@ -3,7 +3,12 @@ import pandas as pd
 import re
 from transformers import pipeline
 
-API_KEY = "b60a0ce93e849af0ed37d20f0ee03817"
+import streamlit as st
+
+try:
+    API_KEY = st.secrets["GNEWS_API_KEY"]
+except (KeyError, FileNotFoundError, Exception):
+    API_KEY = "b60a0ce93e849af0ed37d20f0ee03817"
 
 categories = {
     "National": "India",
