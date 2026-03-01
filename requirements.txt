@@ -1,6 +1,3 @@
 pandas
 requests
 streamlit
-transformers
-torch
-tf-keras

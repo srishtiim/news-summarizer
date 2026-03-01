@@ -1,7 +1,6 @@
 import requests
 import pandas as pd
 import re
-from transformers import pipeline
 
 import streamlit as st
 
@@ -121,11 +120,15 @@ def update_news():
     
     # Load abstractive summarizer pipeline
     try:
+        from transformers import pipeline
         print("Loading summarization model (DistilBART for speed)...")
         summarizer = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6")
         print("Generating abstractive summaries...")
         # Increased max_length and min_length for 4-5 line summaries
         all_news_df['Abstractive_Summary'] = all_news_df[text_column].apply(lambda x: abstractive_summarizer(x, summarizer))
+    except ImportError:
+        print("Transformers library not installed. Falling back to extractive summary (lightweight mode).")
+        all_news_df['Abstractive_Summary'] = all_news_df['Extractive_Summary'] # Fallback
     except Exception as e:
         print(f"Error in abstractive summarization: {e}")
         all_news_df['Abstractive_Summary'] = all_news_df['Extractive_Summary'] # Fallback
