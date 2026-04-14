@@ -1,3 +1,9 @@
+fastapi
+fastapi[standard]
+uvicorn
 pandas
 requests
-streamlit>=1.40.0
+transformers
+torch
+pydantic
+python-dotenv
