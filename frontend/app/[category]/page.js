@@ -15,12 +15,15 @@ export default function CategoryPage({ params }) {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-        // Convert to Title Case for API if needed, or API handles logic.
-        const res = await fetch(`${apiUrl}/api/articles?category=${category}`);
+        // Fetching static JSON directly
+        const res = await fetch(`/daily_cache.json?v=${new Date().getTime()}`); // Cache bust for fresh data
         if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
-        setArticles(data);
+        const allArticles = data.articles || [];
+        const filtered = category.toLowerCase() === "all" 
+                         ? allArticles 
+                         : allArticles.filter(a => a.Category?.toLowerCase() === category.toLowerCase());
+        setArticles(filtered);
       } catch (err) {
         console.error(err);
       } finally {

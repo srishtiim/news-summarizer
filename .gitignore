@@ -1,8 +1,27 @@
-.env
+# Python
 __pycache__/
 *.pyc
-.DS_Store
-.streamlit/secrets.toml
+*.pyo
 venv/
 .venv/
+
+# Environment
+.env
 *.env
+.streamlit/secrets.toml
+
+# Data / Logs / DB
+*.db
+*.log
+*.csv
+*.rtf
+
+# OS
+.DS_Store
+
+# Node
+node_modules/
+.next/
+
+# Vercel
+.vercel

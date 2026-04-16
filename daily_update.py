@@ -1,13 +1,11 @@
 import requests
 import pandas as pd
 import re
+import os
+import json
+import datetime
 
-import streamlit as st
-
-try:
-    API_KEY = st.secrets["GNEWS_API_KEY"]
-except (KeyError, FileNotFoundError, Exception):
-    API_KEY = "b60a0ce93e849af0ed37d20f0ee03817"
+API_KEY = os.environ.get("GNEWS_API_KEY", "b60a0ce93e849af0ed37d20f0ee03817")
 
 categories = {
     "National": "India",
@@ -139,10 +137,27 @@ def update_news():
     all_news_df['Quick_Pointers'] = all_news_df['Abstractive_Summary'].apply(quick_pointers)
     all_news_df['Easy_Explanation'] = all_news_df['Category'].apply(easy_explanation)
     
-    # Save the CSV
-    output_file = "TOI_final_all_features.csv"
-    all_news_df.to_csv(output_file, index=False)
-    print(f"Successfully saved {len(all_news_df)} articles to {output_file}")
+    # Format to dictionary
+    all_articles = all_news_df.to_dict(orient="records")
+    output_data = {
+        "articles": all_articles,
+        "last_updated": str(datetime.datetime.now().date())
+    }
+    
+    # Save the JSON to frontend/public/ so Next.js can serve it statically
+    output_dir = os.path.join(os.path.dirname(__file__), "frontend", "public")
+    os.makedirs(output_dir, exist_ok=True)
+    output_file = os.path.join(output_dir, "daily_cache.json")
+    
+    with open(output_file, "w", encoding="utf-8") as f:
+        json.dump(output_data, f, ensure_ascii=False, indent=2)
+        
+    print(f"Successfully saved {len(all_articles)} articles to {output_file}")
+    
+    # Also save to root directory for backwards compatibility with main.py if needed locally
+    with open("daily_cache.json", "w", encoding="utf-8") as f:
+        json.dump(output_data, f, ensure_ascii=False, indent=2)
+        
     return True
     
 if __name__ == "__main__":
