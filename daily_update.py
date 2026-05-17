@@ -5,7 +5,9 @@ import os
 import json
 import datetime
 
-API_KEY = os.environ.get("GNEWS_API_KEY", "b60a0ce93e849af0ed37d20f0ee03817")
+API_KEY = os.environ.get("GNEWS_API_KEY")
+if not API_KEY:
+    raise ValueError("GNEWS_API_KEY not set")
 
 categories = {
     "National": "India",
