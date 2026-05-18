@@ -22,7 +22,7 @@ categories = {
 def fetch_times_of_india_news(query, max_articles=10):
     url = (f"https://gnews.io/api/v4/search?"
            f"q={query}&lang=en&max={max_articles}&token={API_KEY}"
-           f"&in=timesofindia.indiatimes.com")
+           f"&country=in")
     response = requests.get(url)
     data = response.json()
     
