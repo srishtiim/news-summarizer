@@ -22,6 +22,13 @@ module.exports = {
         },
         border: {
           tan: "#C0A882",
+        },
+        retro: {
+          cream: '#F5EBE0',
+          charcoal: '#1A1A1A',
+          sage: '#7A9E7E',
+          orange: '#FF6B35',
+          muted: '#6B6B6B',
         }
       },
       fontFamily: {
@@ -30,6 +37,8 @@ module.exports = {
         body: ['"Crimson Text"', 'serif'],
         mono: ['"Courier Prime"', 'monospace'],
         dropcap: ['"IM Fell English"', 'serif'],
+        'sans-retro': ['var(--font-space)', 'sans-serif'],
+        'mono-retro': ['var(--font-plex)', 'monospace'],
       },
       boxShadow: {
         vintage: "4px 4px 12px rgba(0,0,0,0.3)",

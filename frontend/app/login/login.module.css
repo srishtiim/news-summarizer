@@ -1,0 +1,220 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: theme('colors.retro.cream');
+  padding: 2rem;
+  font-family: theme('fontFamily.sans-retro');
+}
+
+.frame {
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+  height: 80vh;
+  min-height: 600px;
+  background-color: theme('colors.retro.cream');
+  border: 2px solid theme('colors.retro.charcoal');
+  box-shadow: 0 0 0 4px theme('colors.retro.cream'), 0 0 0 6px theme('colors.retro.charcoal');
+}
+
+/* Nav Rail */
+.navRail {
+  width: 100px;
+  display: flex;
+  flex-direction: column;
+  border-right: 2px solid theme('colors.retro.charcoal');
+  flex-shrink: 0;
+}
+
+.navItem {
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-bottom: 2px solid theme('colors.retro.charcoal');
+  color: theme('colors.retro.charcoal');
+  font-family: theme('fontFamily.mono-retro');
+  font-size: 0.75rem;
+  transition: all 150ms ease;
+  cursor: default;
+}
+
+.navItem:hover {
+  background-color: theme('colors.retro.sage');
+  color: white;
+}
+
+/* Middle Panel */
+.middlePanel {
+  flex: 6;
+  display: flex;
+  flex-direction: column;
+  padding: 4rem;
+  border-right: 2px solid theme('colors.retro.charcoal');
+  position: relative;
+}
+
+.illustrationBox {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.textContent {
+  max-width: 400px;
+}
+
+.heading {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: theme('colors.retro.charcoal');
+  line-height: 1.1;
+  margin-bottom: 1rem;
+}
+
+.bodyText {
+  font-size: 1.125rem;
+  color: theme('colors.retro.charcoal');
+  line-height: 1.5;
+}
+
+.carouselDots {
+  display: flex;
+  gap: 12px;
+  margin-top: 3rem;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid theme('colors.retro.charcoal');
+}
+
+.dotActive {
+  background-color: theme('colors.retro.charcoal');
+}
+
+/* Right Panel */
+.authPanel {
+  flex: 4;
+  padding: 4rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.authHeading {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: theme('colors.retro.charcoal');
+  line-height: 1.1;
+  margin-bottom: 0.5rem;
+}
+
+.authSubtext {
+  font-family: theme('fontFamily.mono-retro');
+  color: theme('colors.retro.charcoal');
+  font-size: 0.9rem;
+  margin-bottom: 3rem;
+}
+
+.googleBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  padding: 1rem;
+  background: white;
+  border: 2px solid theme('colors.retro.charcoal');
+  font-family: theme('fontFamily.mono-retro');
+  font-weight: 600;
+  font-size: 1rem;
+  color: theme('colors.retro.charcoal');
+  cursor: pointer;
+  transition: all 150ms ease;
+  margin-bottom: 2rem;
+}
+
+.googleBtn:hover {
+  border-width: 3px;
+  padding: calc(1rem - 1px);
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: theme('fontFamily.mono-retro');
+  color: theme('colors.retro.charcoal');
+  font-size: 0.875rem;
+  margin-bottom: 2rem;
+}
+
+.inputGroup {
+  margin-bottom: 1.5rem;
+}
+
+.input {
+  width: 100%;
+  padding: 1rem;
+  background: transparent;
+  border: 2px solid theme('colors.retro.charcoal');
+  font-family: theme('fontFamily.mono-retro');
+  font-size: 1rem;
+  color: theme('colors.retro.charcoal');
+  outline: none;
+}
+
+.input:focus {
+  border-color: theme('colors.retro.sage');
+}
+
+.input::placeholder {
+  color: theme('colors.retro.charcoal');
+  opacity: 0.6;
+}
+
+.continueBtn {
+  width: 100%;
+  padding: 1rem;
+  background-color: theme('colors.retro.orange');
+  border: none;
+  font-family: theme('fontFamily.mono-retro');
+  font-weight: 600;
+  font-size: 1rem;
+  color: white;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+.continueBtn:hover {
+  filter: brightness(0.9);
+}
+
+@media (max-width: 1024px) {
+  .navRail {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .frame {
+    flex-direction: column;
+    height: auto;
+  }
+  .middlePanel {
+    border-right: none;
+    border-bottom: 2px solid theme('colors.retro.charcoal');
+    padding: 2rem;
+  }
+  .authPanel {
+    padding: 2rem;
+  }
+}

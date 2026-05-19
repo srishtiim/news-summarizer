@@ -59,7 +59,7 @@ export default function CategoryPage({ params }) {
           No dispatches found for this section today.
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12 columns-1 md:columns-2 lg:columns-3" style={{ columnGap: '3rem' }}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
           {articles.map((article, idx) => (
             <motion.div
               key={idx}
