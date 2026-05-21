@@ -45,7 +45,7 @@ export default function Home() {
           <div className="my-6 md:my-8 text-center shrink-0">
             <div className="h-[1px] bg-ink-dark/30 w-3/4 mx-auto mb-4"></div>
             <p className="font-masthead text-lg md:text-xl italic text-ink-brown/80">
-              Select your section to read today's dispatches.
+              Select your section to read today&apos;s dispatches.
             </p>
             <div className="h-[1px] bg-ink-dark/30 w-3/4 mx-auto mt-4"></div>
           </div>
