@@ -10,13 +10,13 @@ if not API_KEY:
     raise ValueError("GNEWS_API_KEY not set")
 
 categories = {
-    "National": "India",
-    "Sports": "sports",
-    "Business": "business",
-    "Editorial": "editorial",
-    "Tech": "technology",
-    "Politics": "politics",
-    "International": "world"
+    "national": "India",
+    "sports": "sports",
+    "business": "business",
+    "editorial": "editorial",
+    "tech": "technology",
+    "politics": "politics",
+    "international": "world"
 }
 
 def fetch_times_of_india_news(query, max_articles=10):
@@ -72,17 +72,17 @@ def quick_pointers(summary):
     return '\n'.join([f"- {s}" for s in sentences[:3]])
 
 def easy_explanation(category):
-    if category == "Politics":
+    if category == "politics":
         return "This news covers government actions or policy—good for current affairs prep."
-    elif category == "Business":
+    elif category == "business":
         return "Business update—note market trends, economic data, or major events."
-    elif category == "Tech":
+    elif category == "tech":
         return "Covers a new technology or innovation—read for latest in tech world."
-    elif category == "Sports":
+    elif category == "sports":
         return "Sports update—focus on teams, results, or big tournaments."
-    elif category == "International":
+    elif category == "international":
         return "International headline—key for global or world affairs section."
-    elif category == "Editorial":
+    elif category == "editorial":
         return "Editorial or opinion piece—useful for essay, interview, or comprehension."
     else:
         return "General news—good for reading practice, GK, and exam context."

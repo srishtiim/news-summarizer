@@ -1,6 +1,6 @@
 const { MongoClient } = require('mongodb');
 
-const uri = "mongodb+srv://srishtiimukherjee_db_user:5RtFzozIlH3f7g3I@cluster0.yxju1yz.mongodb.net/news-summarizer";
+const uri = process.env.MONGODB_URI;
 
 async function run() {
   console.log("Connecting to MongoDB...");
