@@ -4,6 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import ArticleCard from "../../components/ArticleCard";
 import ArticleModal from "../../components/ArticleModal";
+import Footer from "../../components/Footer";
 
 export default function CategoryPage({ params }) {
   const [articles, setArticles] = useState([]);
@@ -36,8 +37,9 @@ export default function CategoryPage({ params }) {
   const categoryTitle = category.toUpperCase();
 
   return (
-    <main className="min-h-screen p-6 md:p-10 lg:p-16 max-w-[1600px] mx-auto bg-paper-cream relative">
-      <Link 
+    <>
+      <main className="min-h-screen p-6 md:p-10 lg:p-16 max-w-[1600px] mx-auto bg-paper-cream relative">
+        <Link 
         href="/"
         className="inline-block mb-8 font-mono text-sm font-bold tracking-widest uppercase border-b-2 border-ink-dark/30 pb-1 hover:text-accent-crimson hover:border-accent-crimson transition-colors"
       >
@@ -84,5 +86,7 @@ export default function CategoryPage({ params }) {
         />
       )}
     </main>
+    <Footer />
+    </>
   );
 }

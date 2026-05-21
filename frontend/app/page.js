@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Footer from "../components/Footer";
 
 export default function Home() {
   const categories = [
@@ -20,8 +21,9 @@ export default function Home() {
   });
 
   return (
-    <main className="min-h-screen p-6 md:p-12 lg:p-20 max-w-[1400px] mx-auto">
-      <header className="border-b-[8px] border-double border-ink-dark pb-6 mb-16 text-center">
+    <>
+      <main className="min-h-screen p-6 md:p-12 lg:p-20 max-w-[1400px] mx-auto">
+        <header className="border-b-[8px] border-double border-ink-dark pb-6 mb-16 text-center">
         <h1 className="font-masthead text-5xl md:text-7xl lg:text-8xl font-black text-ink-brown uppercase tracking-tighter mb-4">
           The Times of India
         </h1>
@@ -57,5 +59,7 @@ export default function Home() {
         ))}
       </section>
     </main>
+    <Footer />
+    </>
   );
 }
