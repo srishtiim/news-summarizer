@@ -5,6 +5,7 @@ import os
 import json
 import datetime
 import sys
+import time
 
 API_KEY = os.environ.get("GNEWS_API_KEY")
 if not API_KEY:
@@ -106,6 +107,7 @@ def update_news():
                 print(f"No articles found for {cat_name}")
         except Exception as e:
             print(f"Error fetching {cat_name}: {e}")
+        time.sleep(2)  # stay under GNews's burst rate limit
 
     if not dfs:
         print("No news fetched. Check API key or connection.")
