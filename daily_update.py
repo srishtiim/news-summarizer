@@ -4,26 +4,32 @@ import re
 import os
 import json
 import datetime
+import sys
 
 API_KEY = os.environ.get("GNEWS_API_KEY")
 if not API_KEY:
     raise ValueError("GNEWS_API_KEY not set")
 
 categories = {
-    "national": "India",
-    "sports": "sports",
-    "business": "business",
-    "editorial": "editorial",
-    "tech": "technology",
-    "politics": "politics",
-    "international": "world"
+    "national": '"India news" OR "national news"',
+    "sports": '"Indian cricket" OR "Indian sports" OR IPL',
+    "business": '"Indian economy" OR "Indian markets" OR "Indian business"',
+    "editorial": "opinion OR editorial OR analysis",
+    "tech": '"Indian startup" OR "India technology" OR "Indian tech"',
+    "politics": '"Indian politics" OR "Indian government" OR "Lok Sabha"',
+    "international": '"world news" OR "international news" OR global'
 }
 
 def fetch_times_of_india_news(query, max_articles=10):
-    url = (f"https://gnews.io/api/v4/search?"
-           f"q={query}&lang=en&max={max_articles}&token={API_KEY}"
-           f"&country=in")
-    response = requests.get(url)
+    url = "https://gnews.io/api/v4/search"
+    params = {
+        "q": query,
+        "lang": "en",
+        "max": max_articles,
+        "token": API_KEY,
+        "country": "in",
+    }
+    response = requests.get(url, params=params)
     data = response.json()
     
     if response.status_code != 200:
@@ -163,4 +169,6 @@ def update_news():
     return True
     
 if __name__ == "__main__":
-    update_news()
+    success = update_news()
+    if not success:
+        sys.exit(1)
